@@ -450,3 +450,6 @@ mode_combobox = customtkinter.CTkOptionMenu(master=app,
 mode_combobox.place(relx=0.5, rely=0.1, anchor = tkinter.CENTER)
 
 app.mainloop()
+
+# Password Manager v1.1
+# By @MortexAG https://github.com/MortexAG/
