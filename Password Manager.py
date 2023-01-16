@@ -103,10 +103,10 @@ def decrypt_username(username):
     except:
         with open("key.mortkey.backup", "rb") as the_key:
             key = the_key.read()
-        password = password.replace("\n", "")
+        username = username.replace("\n", "")
         load_dotenv()
         #the_password = os.environ[f"{username}_username"]
-        decrypted = Fernet(key).decrypt(os.environ[f"{password}_username"])
+        decrypted = Fernet(key).decrypt(os.environ[f"{username}_username"])
         return decrypted
 
 def encrypt_pass(password):
