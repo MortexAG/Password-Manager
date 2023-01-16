@@ -97,7 +97,7 @@ def decrypt_username(username):
             key = the_key.read()
         username = username.replace("\n", "")
         load_dotenv()
-        #the_password = os.environ[f"{username}_password"]
+        #the_password = os.environ[f"{username}_username"]
         decrypted = Fernet(key).decrypt(os.environ[f"{username}_username"])
         return decrypted
     except:
@@ -105,7 +105,7 @@ def decrypt_username(username):
             key = the_key.read()
         password = password.replace("\n", "")
         load_dotenv()
-        the_password = os.environ[f"{password}_password"]
+        #the_password = os.environ[f"{username}_username"]
         decrypted = Fernet(key).decrypt(os.environ[f"{password}_username"])
         return decrypted
 
