@@ -8,7 +8,7 @@ import os
 import dotenv
 from dotenv import load_dotenv
 load_dotenv()
-from PIL import Image
+
 #Checking Paths
 
 if os.path.exists("./color_mode.txt"):
