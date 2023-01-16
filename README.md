@@ -1,4 +1,4 @@
-# Open Source Free Python Password Manager
+# Free Open Source Python Password Manager
 # <h2>Features</h2>
 - Encrypts And Stores Passwords And Username
 - Uses A Unique Key To Encode, The Key Is Generated On The First Time You Run The App
