@@ -1,2 +1,10 @@
 # Open Source Free Python Password Manager
--Delete "key.mortkey" and "key.mortkey.backup" if you want to clone this repository, they will be regenerated again but with diefferent keys
+# <h2>Features</h2>
+- Encrypts And Stores Passwords And Username
+- Uses A Unique Key To Encode, The Key Is Generated On The First Time You Run The App
+- The Key Is Stored Locally In The Same Directory As The App 
+# <h2>Description</h2>
+- Safe Password Manager
+- Created Using Python Cryptography Module
+# <h4>To Clone This Repositroy</h4>
+- Delete "key.mortkey" and "key.mortkey.backup", they will be regenerated again but with diefferent keys
