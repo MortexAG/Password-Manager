@@ -7,4 +7,4 @@
 - Safe Password Manager
 - Created Using Python Cryptography Module
 # <h4>To Clone This Repositroy</h4>
-- Delete "key.mortkey" and "key.mortkey.backup", they will be regenerated again but with diefferent keys
+- Delete "key.mortkey" and "key.mortkey.backup" and "password_list.mortlist", they will be regenerated again but with diefferent keys
