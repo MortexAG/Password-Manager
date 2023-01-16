@@ -1,12 +1,13 @@
 import tkinter
 from tkinter import messagebox, PhotoImage
 import customtkinter
-from customtkinter import CTkEntry, CTkLabel, CTkButton, CTkFrame
+from customtkinter import CTkEntry, CTkLabel, CTkButton, CTkFrame, CTkToplevel
 import cryptography
 from cryptography.fernet import Fernet
 import os
 import dotenv
 from dotenv import load_dotenv
+import fileinput
 load_dotenv()
 
 #Checking Paths
@@ -59,6 +60,7 @@ if os.path.exists("./key.mortkey") and os.path.exists("./key.mortkey.backup") ==
         restore = open("key.mortkey.backup", "wb")
         restore.write(key)
         restore.close()
+
 
 with open("color_mode.txt", 'r') as mode:
     color = mode.read()
@@ -156,7 +158,7 @@ def new_pwd_window():
     pass_name.place(relx = 0.5, rely=0.1, anchor = tkinter.CENTER)
     name_entry = customtkinter.CTkEntry(master=new_pass_window,
                                placeholder_text="Site Name",
-                               width=120,
+                               width=200,
                                height=25,
                                border_width=2,
                                corner_radius=10)
@@ -286,7 +288,10 @@ while True:
     if not line:
         break
     line = line.replace("\n", "")
-    pwds.append(line)
+    if len(line) > 0:
+        pwds.append(line)
+    else:
+        pass
 passwords = pwds
 ###
 pwd_combobox = customtkinter.CTkOptionMenu(master=app,
@@ -308,19 +313,122 @@ def refresh_list():
     
         # if line is empty
         # end of file is reached
-        line = line.replace("\n", "")
         if not line:
             break
-        pwds.append(line)
+        line = line.replace("\n", "")
+        if len(line) > 0:
+            pwds.append(line)
+        else:
+            pass
     passwords = pwds
     ###
     pwd_combobox.configure(values=passwords)
-    #pwd_combobox.place(relx=0.5, rely=0.3, anchor = tkinter.CENTER)
     return passwords
-refresh_button = CTkButton(app, text="Refresh List", command=refresh_list)
+def refresh_list_btn():
+    pwd_list= open("password_list.mortlist", "r")
+    #organise the menu
+    count = 0
+    pwds = []
+    while True:
+        count += 1
+    
+        # Get next line from file
+        line = pwd_list.readline()
+    
+        # if line is empty
+        # end of file is reached
+        if not line:
+            break
+        line = line.replace("\n", "")
+        if len(line) > 0:
+            pwds.append(line)
+        else:
+            pass
+    passwords = pwds
+    ###
+    pwd_combobox.configure(values=passwords)
+    passmenu_var = customtkinter.StringVar(value="Passwords")
+    pwd_combobox.configure(variable = passmenu_var)
+    textbox = customtkinter.CTkTextbox(app, width=400, height=150)
+    textbox.place(relx=0.5, rely=0.5, anchor=tkinter.CENTER)
+    textbox.insert(0.0, "")
+    textbox.configure(state = "disabled")
+    return passwords
+    #pwd_combobox.place(relx=0.5, rely=0.3, anchor = tkinter.CENTER)
+refresh_button = CTkButton(app, text="Refresh List", command=refresh_list_btn)
 refresh_button.place(relx=0.5, rely=0.7, anchor = tkinter.CENTER)
 
+# delete a password
+def delete_pass():
+    delete_pass_window = CTkToplevel(app)
+    delete_pass_window.title("Delete A Password")
+    delete_pass_window.geometry("300x400")
+    if os.path.exists("./icon.png"):
+        photo = PhotoImage(file = "./icon.png")
+        delete_pass_window.iconphoto(False, photo)
+    else:
+        pass
 
+    passwords = refresh_list()
+    def change_current(choice):
+        global the_choice
+        the_choice = choice
+        password = refresh_list()
+        delete_combobox.configure(values=password)
+    deletemenu_var = customtkinter.StringVar(value="Passwords")
+    delete_combobox = customtkinter.CTkOptionMenu(master=delete_pass_window,values=passwords,command=change_current, variable=deletemenu_var)
+    delete_combobox.place(relx=0.5, rely=0.3, anchor = tkinter.CENTER)
+    def confirm_delete():
+        #the_label = CTkLabel(delete_pass_window, text="")
+        #the_label.place(relx = 0.5, rely=0.4, anchor = tkinter.CENTER)
+        try:
+            load_dotenv()
+            with open("./.env", "r+") as envi:
+                vari = envi.read()
+                replace_username = f"{the_choice}_username = {os.environ[f'{the_choice}_username']}"
+                no_user = vari.replace(replace_username, "")
+                replace_pass = f"{the_choice}_password = {os.environ[f'{the_choice}_password']}"
+                no_pass = no_user.replace(replace_pass, "")
+                load_dotenv()
+                new_stuff = open("./.env", 'w')
+                new_stuff.write(no_pass)
+                new_stuff.close()
+
+            with open("./password_list.mortlist", "r+") as list_p:
+                list_read = list_p.read()
+                no_pass = list_read.replace(the_choice, "")
+                new_stuff_list = open("./password_list.mortlist", 'w')
+                new_stuff_list.write(no_pass)
+                new_stuff_list.close()
+                # to  clean up
+            refresh_list_btn()
+            deletemenu_var = customtkinter.StringVar(value="Passwords")
+            delete_combobox.configure(variable = deletemenu_var)
+            textbox = customtkinter.CTkTextbox(app, width=400, height=150)
+            textbox.place(relx=0.5, rely=0.5, anchor=tkinter.CENTER)
+            textbox.insert(0.0, "")
+            textbox.configure(state = "disabled")
+                    
+
+
+            done_label = CTkLabel(delete_pass_window, text=f"{the_choice} Was Deleted Successfully", text_color="green")
+            done_label.place(relx = 0.5, rely=0.4, anchor= tkinter.CENTER)
+            password = refresh_list()
+            delete_combobox.configure(values=password)
+        except:
+            error_label= CTkLabel(delete_pass_window, text="An Error Occurred While Deleting This", text_color="red")
+            error_label.place(relx = 0.5, rely=0.4, anchor = tkinter.CENTER)
+    confirm_delete_button = CTkButton(delete_pass_window, text="Delete Password", command=confirm_delete)
+    confirm_delete_button.place(relx= 0.5, rely=0.5, anchor = tkinter.CENTER)
+    def refresh_delete():
+            refreshed_delete = refresh_list()
+            deletemenu_var = customtkinter.StringVar(value="Passwords")
+            delete_combobox.configure(values = refreshed_delete,variable = deletemenu_var)
+    refresh_delete_btn = CTkButton(delete_pass_window, text="Refresh List", command=refresh_delete)
+    refresh_delete_btn.place(relx=0.5, rely=0.7, anchor = tkinter.CENTER)
+
+delete_button = CTkButton(app, text="Delete A Password", command=delete_pass)
+delete_button.place(relx = 0.5, rely = 0.8, anchor = tkinter.CENTER)
 
 # color mode menu
 
