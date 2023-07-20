@@ -1,4 +1,7 @@
 # Free Open Source Python Password Manager
+![GitHub all releases](https://img.shields.io/github/downloads/MortexAG/Password-Manager/total)
+![GitHub last commit (by committer)](https://img.shields.io/github/last-commit/MortexAG/Password-Manager)
+
 # <h2>Features</h2>
 - Encrypts And Stores Passwords And Username
 - Uses A Unique Key To Encode, The Key Is Generated On The First Time You Run The App
